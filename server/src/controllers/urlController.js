@@ -3,8 +3,7 @@ const urlmodel = require("../models/urlModel")
 const axios = require ('axios')
 const shortid = require ('shortid')
 const {promisify} = require("util")
-const urlModel = require("../models/urlModel")
-const { createClient } = require('redis') ;
+
 // code for validation
 
 const validation = function(value){
@@ -16,20 +15,21 @@ const validation = function(value){
 }
 
 //================redis config=======================//
-const client = createClient({
-  password: 'BzpeyuADtkzR34QaCQl6hfICsmQMra0B',
-  socket: {
-      host: 'redis-11459.c305.ap-south-1-1.ec2.cloud.redislabs.com',
-      port: 11459
-  }
-});
-
-client.on("connect", async function () {
-console.log("Redis is Connected...");
-});
-
-const GET_ASYNC = promisify(client.get).bind(client);
-const SET_ASYNC = promisify(client.setEx).bind(client);
+const redisConfig = redis.createClient(
+    19971,
+    "redis-19971.c261.us-east-1-4.ec2.cloud.redislabs.com",
+    { no_ready_check: true }
+  );
+  
+  redisConfig.auth("Q3d5Ocj1lNemD62NeYoKGovSvkR6EPWk", function (err) {
+    if (err) throw err;
+  });
+  
+  redisConfig.on("connect", async function () {
+    console.log("Redis is Connected...");
+  });
+const GET_ASYNC = promisify(redisConfig.GET).bind(redisConfig);
+const SET_ASYNC = promisify(redisConfig.SETEX).bind(redisConfig);
 
 
 //=================creating short url========================//
@@ -95,7 +95,7 @@ const urlShort = async(req,res) => {
 let fetchData = async(req,res) => {
     try{
         let urlCode = req.params.urlCode
-        if(!shortid.validation(urlCode))
+        if(!shortid.isValid(urlCode))
         return res.status(400).send({status :false, message: "Not A Valid URL"})
         let cachedData= await GET_ASYNC(`${urlCode}`)
         if(cachedData){
@@ -105,7 +105,7 @@ let fetchData = async(req,res) => {
         let findLongURL= await urlmodel.findOne({urlCode})
         if(!findLongURL)
         return res.status(404).send({status : false, message : "URL is not Exist !"})
-        await SET_ASYNC(`${urlCode}`, 24*60*60, JSON.stringify(findLongURL))
+        await SET_ASYNC(`${urlCode}`, 24*60*60, JSON.stringify(findLongURL.longUrl))
         return res.status(302).redirect(findLongURL.longUrl)
     }
     catch(err){

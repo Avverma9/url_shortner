@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./HomePage.css";
+import './HomePage.css'
 
 function HomePage() {
   const [longUrl, setLongUrl] = useState("");
@@ -17,56 +17,31 @@ function HomePage() {
   };
 
   return (
-    <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">URL Shortener</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item active">
-              <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">About</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Contact</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-8">
-            <form onSubmit={handleSubmit}>
-              <div className="input-group mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your long URL"
-                  aria-label="Enter your long URL"
-                  aria-describedby="button-addon2"
-                  value={longUrl}
-                  onChange={handleLongUrlChange}
-                />
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                  id="button-addon2"
-                >
-                  Shorten URL
-                </button>
-              </div>
-            </form>
-            {shortUrl && (
-              <div className="alert alert-success" role="alert">
-                <p>Here is your shortened URL:</p>
-                <a href={shortUrl} target="_blank" rel="noreferrer">{shortUrl}</a>
-              </div>
-            )}
-          </div>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <h1 className="text-center mb-4">URL Shortener</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="longUrl">Enter a long URL:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="longUrl"
+                value={longUrl}
+                onChange={handleLongUrlChange}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Shorten URL
+            </button>
+          </form>
+          {shortUrl && (
+            <div className="mt-4">
+              <h4>Short URL:</h4>
+              <a href={shortUrl}>{shortUrl}</a>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -74,3 +49,4 @@ function HomePage() {
 }
 
 export default HomePage;
+
