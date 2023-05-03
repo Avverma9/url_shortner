@@ -78,7 +78,7 @@ const urlShort = async(req,res) => {
      let findData= await urlmodel.findOne({ longUrl : longUrl}).select({_id:0, __v:0});
      if(findData){
      await SET_ASYNC(`${longUrl}`, 60 * 5, JSON.stringify(findData))
-     return res.status(201).send({status : true, message: findData})}
+     return res.status(201).send({status : true, data: findData})}
 
      let final= await urlmodel.create(obj)
      await SET_ASYNC(`${longUrl}`, 60 * 5, JSON.stringify(obj) )

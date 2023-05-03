@@ -1,50 +1,41 @@
-import React, { useState } from "react";
-import './HomePage.css'
+import React, { useState } from 'react';
+import Axios from 'axios';
 
 function HomePage() {
-  const [longUrl, setLongUrl] = useState("");
-  const [shortUrl, setShortUrl] = useState("");
+  const [longUrl, setLongUrl] = useState('');
+  const [response, setResponse] = useState(null);
 
-  const handleLongUrlChange = (event) => {
-    setLongUrl(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // You can implement your URL shortening logic here
-    // For now, we'll just set the short URL to be the same as the long URL
-    setShortUrl(longUrl);
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    Axios.post("http://localhost:3001/url/shorten", {
+      longUrl: longUrl
+    })
+    .then((res) => {
+      console.log(res);
+      setResponse(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h1 className="text-center mb-4">URL Shortener</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="longUrl">Enter a long URL:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="longUrl"
-                value={longUrl}
-                onChange={handleLongUrlChange}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Shorten URL
-            </button>
-          </form>
-          {shortUrl && (
-            <div className="mt-4">
-              <h4>Short URL:</h4>
-              <a href={shortUrl}>{shortUrl}</a>
-            </div>
-          )}
+    <>
+    <label className="label">URL Shrinker</label>
+      <form onSubmit={handleSubmit} className='form-container'>
+        <label>Enter Your Long URL</label>
+        <input type="text" name='longUrl' value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
+        <br /><br />
+        <input type="submit" value="SUBMIT" />
+      </form>
+      {response && (
+        <div className='response-container'>
+          <p>URL Code     : <a href={response.data.urlCode} target="_blank" rel="noopener noreferrer">{response.data.urlCode}</a></p>
+          <p>Short URL    : <a href={response.data.shortUrl} target="_blank" rel="noopener noreferrer">{response.data.shortUrl}</a></p>
+          
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
