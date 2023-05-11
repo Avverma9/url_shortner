@@ -68,7 +68,7 @@ const urlShort = async(req,res) => {
      } 
 
      let shortenURL =shortid.generate().toLowerCase()
-     let baseURL ="http://localhost:3000/"
+     let baseURL ="https://url-shrinker-67vz.onrender.com/"
      let obj ={
       longUrl: longUrl.trim(),
       shortUrl: baseURL + shortenURL,
